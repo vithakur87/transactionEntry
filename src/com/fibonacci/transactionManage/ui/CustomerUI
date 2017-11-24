@@ -1,0 +1,126 @@
+package com.fibonacci.transactionManage.ui;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+import com.fibonacci.transactionManage.entity.Customer;
+import com.fibonacci.transactionManage.entity.Transaction;
+import com.fibonacci.transactionManage.exceptions.CustomerException;
+import com.fibonacci.transactionManage.services.CustomerService;
+import com.fibonacci.transactionManage.services.ICustomerService;
+
+public class CustomerUI {
+	
+	public static void main(String[] args) throws CustomerException, IOException {
+		
+		ICustomerService service = new CustomerService();	
+		Scanner scanInput =  new Scanner(System.in);
+		BufferedReader bReader = new BufferedReader(new InputStreamReader(System.in));
+		int choice;
+		do {
+			System.out.println("1.Update Customer");
+			System.out.println("2.Update Transaction");
+			System.out.println("3.Transaction Details");
+			System.out.println("4.Customer Details");
+			System.out.println("5.Get Transcation Detail");
+			System.out.println("6.Exit");
+			choice = scanInput.nextInt();
+			switch(choice) {
+				case 1:
+						System.out.print("Enter The Customer Name:");
+						String customerName = bReader.readLine();
+						System.out.println();
+						Customer customer = new Customer(customerName);
+						int update = service.updateCustomer(customer);
+						if(update==1) {
+							System.out.println("Updation Successfully Completed");
+						}
+						else {
+							System.out.println("Updation could not be performed");
+						}
+						break;
+				case 2:
+						System.out.println("Update Transaction");
+						System.out.print("Enter the Customer Id: ");
+						int customerId = scanInput.nextInt();
+						System.out.println();
+						System.out.print("Enter the Transaction Name");
+						String transactionName = bReader.readLine();
+						System.out.println();
+						System.out.print("Enter Transaction Amount");
+						double transactionAmount = scanInput.nextDouble();
+						Transaction transaction = new Transaction(transactionName, transactionAmount);
+						update = service.updateTransaction(transaction,customerId);
+						if(update==1) {
+							System.out.println("Updation Successfully Completed");
+						}
+						else {
+							System.out.println("Updation could not be performed");
+						}
+						break;
+				case 3:
+						System.out.println("Transaction Details");
+						ArrayList<Transaction> transactionDetails = new ArrayList<>();
+						System.out.print("Enter the Customer Id");
+						int custId = scanInput.nextInt();
+						System.out.println();
+						transactionDetails = service.getCustomerTransactionDetails(custId);
+						
+						/*System.out.print("|--------------------------------------------------------------"
+								+ "------------------------------------------------------------------|");
+						System.out.println();
+						System.out.print("|\t\tTransactionId\t\t");
+						System.out.print("|\t\tProduct Name\t\t");
+						System.out.print("|\t\tTotal Amount\t\t");
+						System.out.print("|\t\tTransaction Date\t\t|");
+						System.out.println();
+						System.out.print("|----------------------------------------------------------------"
+								+ "----------------------------------------------------------------|");*/
+						/*int transId; 
+						String transName;
+						double transAmount;
+						Date transDate;*/
+						System.out.println();
+						for(Transaction transact:transactionDetails) {
+							/*transId = transact.getTransactionId();
+							transName = transact.getTransactionName();
+							transAmount = transact.getTransactionAmount();
+							transDate = transact.getTransactionDate();
+							/*System.out.println("|"+transId+"\t\t"+transName+"\t"+transAmount+"\t"+transDate+"\t|");
+							System.out.println("|-------------------------------------------------------------"
+									+ "--------|");
+							 */
+							System.out.println(transact);
+							}
+						break;
+				case 4:
+						System.out.println("Customer Details");
+						System.out.print("Enter the Customer Id: ");
+						int id = scanInput.nextInt();
+						Customer cust=null;
+						cust = service.getCustomerDetail(id);
+						System.out.println(cust.toString());
+						break;
+				
+				case 5: 
+						System.out.println("Transaction Details");
+						System.out.println("Enter The Transaction Id");
+						int tid = scanInput.nextInt();
+						Transaction trans = service.getTransactionDetail(tid);
+						System.out.println(trans.toString());
+						break;
+				
+				case 6:
+						System.exit(0);
+				default : break;
+			}
+		}while(choice!=6);
+		bReader.close();
+		scanInput.close();
+	}
+
+}
